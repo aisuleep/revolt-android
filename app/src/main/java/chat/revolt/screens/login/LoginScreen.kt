@@ -13,7 +13,12 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,6 +34,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,6 +67,10 @@ class LoginViewModel @Inject constructor(
     private var _password by mutableStateOf("")
     val password: String
         get() = _password
+
+    private var _showPassword by mutableStateOf(false)
+    val showPassword: Boolean
+    get() = _showPassword
 
     private var _error by mutableStateOf<String?>(null)
     val error: String?
@@ -128,6 +138,10 @@ class LoginViewModel @Inject constructor(
 
     fun setPassword(password: String) {
         _password = password
+    }
+
+    fun toggleShowPassword() {
+        _showPassword = !_showPassword
     }
 }
 
@@ -201,13 +215,24 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                     value = viewModel.email,
                     label = stringResource(R.string.email),
                     onChange = viewModel::setEmail,
-                    modifier = Modifier.padding(vertical = 25.dp)
+                    modifier = Modifier.padding(vertical = 25.dp),
                 )
                 FormTextField(
                     value = viewModel.password,
                     label = stringResource(R.string.password),
+                    onChange = viewModel::setPassword,
+                    trailingIcon = {
+                        IconButton(onClick = viewModel::toggleShowPassword) {
+                            Icon(
+                                imageVector = if (viewModel.showPassword)
+                                    Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                contentDescription = null
+                            )
+                        }
+
+                    },
                     type = KeyboardType.Password,
-                    onChange = viewModel::setPassword
+                    visualTransformation = if (viewModel.showPassword) null else PasswordVisualTransformation(),
                 )
 
                 AnyLink(

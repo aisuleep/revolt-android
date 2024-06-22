@@ -19,7 +19,9 @@ fun FormTextField(
     onChange: (it: String) -> Unit,
     modifier: Modifier = Modifier,
     type: KeyboardType = KeyboardType.Text,
-    supportingText: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation? = null,
+    supportingText: @Composable() (() -> Unit)? = null,
+    trailingIcon: @Composable() (() -> Unit)? = null,
     singleLine: Boolean = true,
     enabled: Boolean = true
 ) {
@@ -28,9 +30,10 @@ fun FormTextField(
         onValueChange = onChange,
         singleLine = singleLine,
         keyboardOptions = KeyboardOptions(keyboardType = type),
-        visualTransformation = if (type == KeyboardType.Password) PasswordVisualTransformation() else VisualTransformation.None,
+        visualTransformation = visualTransformation ?: VisualTransformation.None,
         label = { Text(label) },
         supportingText = supportingText,
+        trailingIcon = trailingIcon,
         enabled = enabled,
         modifier = modifier
     )
