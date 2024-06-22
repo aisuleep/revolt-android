@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -224,8 +222,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                     trailingIcon = {
                         IconButton(onClick = viewModel::toggleShowPassword) {
                             Icon(
-                                imageVector = if (viewModel.showPassword)
-                                    Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                painter = painterResource(if (viewModel.showPassword)
+                                    R.drawable.ic_visibility_off_24dp else R.drawable.ic_visibility_24dp),
                                 contentDescription = null
                             )
                         }
