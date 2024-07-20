@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -33,12 +35,18 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import chat.revolt.R
 import chat.revolt.api.RevoltAPI
+import chat.revolt.api.internals.PermissionBit
+import chat.revolt.api.internals.has
 import chat.revolt.api.routes.server.leaveOrDeleteServer
+import chat.revolt.callbacks.Action
+import chat.revolt.callbacks.ActionChannel
 import chat.revolt.components.generic.SheetButton
 import chat.revolt.components.generic.SheetEnd
 import chat.revolt.components.markdown.RichMarkdown
 import chat.revolt.components.screens.settings.ServerOverview
 import chat.revolt.internals.Platform
+import chat.revolt.internals.extensions.rememberServerPermissions
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -48,6 +56,8 @@ fun ServerContextSheet(
     onHideSheet: suspend () -> Unit
 ) {
     val server = RevoltAPI.serverCache[serverId]
+    val scope = rememberCoroutineScope()
+    val permissions by rememberServerPermissions(serverId)
 
     if (server == null) {
         Box(
@@ -213,6 +223,33 @@ fun ServerContextSheet(
             }
         }
     )
+
+    if (
+        (permissions has PermissionBit.ManageChannel || permissions has PermissionBit.ManageServer || permissions has PermissionBit.ManagePermissions || permissions has PermissionBit.ManageRole || permissions has PermissionBit.ManageCustomisation || server.owner == RevoltAPI.selfId)
+    ) {
+        SheetButton(
+            headlineContent = {
+                Text(
+                    text = stringResource(id = R.string.settings),
+                )
+            },
+            leadingContent = {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = null
+                )
+            },
+            onClick = {
+                scope.launch {
+                    onHideSheet()
+                }
+                scope.launch {
+                    delay(100) // wait for the sheet to close or at least start closing
+                    ActionChannel.send(Action.TopNavigate("settings/server/${server.id}"))
+                }
+            }
+        )
+    }
 
     if (server.owner != RevoltAPI.selfId) {
         SheetButton(

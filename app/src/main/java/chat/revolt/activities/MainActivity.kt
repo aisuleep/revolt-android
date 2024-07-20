@@ -71,6 +71,8 @@ import chat.revolt.screens.settings.SettingsScreen
 import chat.revolt.screens.settings.channel.ChannelSettingsHome
 import chat.revolt.screens.settings.channel.ChannelSettingsOverview
 import chat.revolt.screens.settings.channel.ChannelSettingsPermissions
+import chat.revolt.screens.settings.server.ServerSettingsHome
+import chat.revolt.screens.settings.server.ServerSettingsOverview
 import chat.revolt.ui.theme.RevoltTheme
 import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -403,6 +405,15 @@ fun AppEntrypoint(
                 composable("settings/channel/{channelId}/permissions") { backStackEntry ->
                     val channelId = backStackEntry.arguments?.getString("channelId") ?: ""
                     ChannelSettingsPermissions(navController, channelId)
+                }
+
+                composable("settings/server/{serverId}") { backStackEntry ->
+                    val serverId = backStackEntry.arguments?.getString("serverId") ?: ""
+                    ServerSettingsHome(navController, serverId)
+                }
+                composable("settings/server/{serverId}/overview") { backStackEntry ->
+                    val serverId = backStackEntry.arguments?.getString("serverId") ?: ""
+                    ServerSettingsOverview(navController, serverId)
                 }
 
                 composable("about") { AboutScreen(navController) }

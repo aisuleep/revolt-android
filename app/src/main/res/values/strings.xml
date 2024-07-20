@@ -579,6 +579,14 @@
     <string name="settings_changelogs_historical_version_header">Changelog for %1$s</string>
     <string name="settings_changelogs_historical_version_header_placeholder">that version</string>
 
+    <string name="server_settings">Server Settings</string>
+    <string name="server_settings_overview">Overview</string>
+    <string name="server_settings_overview_update_info_error_fallback">There was an error updating the server.</string>
+    <string name="server_settings_overview_info">Server Info</string>
+    <string name="server_settings_overview_name">Server Name</string>
+    <string name="server_settings_overview_description">Server Description</string>
+    <string name="server_settings_overview_description_hint">This server is exclusively for conversation about…</string>
+
     <string name="channel_settings">Channel Settings</string>
     <string name="channel_settings_header">#%1$s</string>
     <string name="channel_settings_overview">Overview</string>
