@@ -1,6 +1,7 @@
 package chat.revolt.screens.chat.views.channel
 
 import android.util.Log
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -51,6 +52,7 @@ import chat.revolt.persistence.KVStorage
 import chat.revolt.screens.chat.ChatRouterDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.ktor.http.ContentType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -74,6 +76,7 @@ class ChannelScreenViewModel @Inject constructor(
     var typingUsers = mutableStateListOf<String>()
 
     var channel by mutableStateOf<Channel?>(null)
+    var lazyListState = LazyListState()
     var activePane by mutableStateOf<ChannelScreenActivePane>(ChannelScreenActivePane.None)
     var keyboardHeight by mutableIntStateOf(0)
 
@@ -104,6 +107,7 @@ class ChannelScreenViewModel @Inject constructor(
         // Reset state
         this.channel = RevoltAPI.channelCache[id]
         this.items = mutableStateListOf(ChannelScreenItem.Loading)
+        this.lazyListState = LazyListState()
         this.activePane = ChannelScreenActivePane.None
         this.typingUsers = mutableStateListOf()
         this.endOfChannel = false
@@ -171,6 +175,18 @@ class ChannelScreenViewModel @Inject constructor(
             partnerId == SpecialUsers.PLATFORM_MODERATION_USER -> R.string.message_field_denied_platform_moderation
             !canSend -> R.string.message_field_denied_no_permission
             else -> R.string.message_field_denied_generic
+        }
+    }
+
+    fun jumpToMessage(message: Message, scope: CoroutineScope) {
+        val messages = items
+
+        val messageItem =
+            messages.find { m -> (m is ChannelScreenItem.RegularMessage && m.message.id == message.id) }
+        val messageIndex = messages.indexOf(messageItem)
+
+        if (messageIndex != -1) {
+            scope.launch { lazyListState.animateScrollToItem(messageIndex) }
         }
     }
 

@@ -74,6 +74,7 @@ import chat.revolt.components.generic.UserAvatar
 import chat.revolt.components.generic.UserAvatarWidthPlaceholder
 import chat.revolt.components.markdown.LocalMarkdownTreeConfig
 import chat.revolt.components.markdown.RichMarkdown
+import chat.revolt.screens.chat.views.channel.ChannelScreenViewModel
 import kotlinx.coroutines.launch
 import chat.revolt.api.schemas.Message as MessageSchema
 
@@ -166,6 +167,7 @@ fun formatLongAsTime(time: Long): String {
 @Composable
 fun Message(
     message: MessageSchema,
+    channelScreenViewModel: ChannelScreenViewModel? = null,
     onMessageContextMenu: () -> Unit = {},
     onAvatarClick: () -> Unit = {},
     onNameClick: (() -> Unit)? = null,
@@ -253,8 +255,13 @@ fun Message(
                             }
                                 ?: false
                         ) {
-                            // TODO Add jump to message
-                            if (replyMessage == null) {
+                            // TODO Add jump to unloaded messages
+                            if (replyMessage != null) {
+                                channelScreenViewModel?.jumpToMessage(
+                                    message = replyMessage,
+                                    scope = scope
+                                )
+                            } else {
                                 Toast.makeText(context, "lmao prankd", Toast.LENGTH_SHORT).show()
                             }
                         }

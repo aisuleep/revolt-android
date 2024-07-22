@@ -43,7 +43,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
@@ -277,7 +276,7 @@ fun ChannelScreen(
 
     // UI elements
 
-    val lazyListState = rememberLazyListState()
+    val lazyListState = viewModel.lazyListState
 
     val isScrolledToBottom = remember(lazyListState) {
         derivedStateOf {
@@ -589,6 +588,7 @@ fun ChannelScreen(
                                     is ChannelScreenItem.RegularMessage -> {
                                         Message(
                                             message = item.message,
+                                            channelScreenViewModel = viewModel,
                                             onMessageContextMenu = {
                                                 item.message.id?.let { messageId ->
                                                     messageContextSheetTarget = messageId
@@ -649,6 +649,7 @@ fun ChannelScreen(
                                             Column {
                                                 Message(
                                                     message = item.message,
+                                                    channelScreenViewModel = viewModel,
                                                     onMessageContextMenu = {},
                                                     onAvatarClick = {},
                                                     onNameClick = {},
